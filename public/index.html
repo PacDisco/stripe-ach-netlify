@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pay via ACH</title>
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <h2>ACH Payment for $2000</h2>
+    <div id="payment-element"></div>
+    <button id="submit">Pay</button>
+
+    <script>
+      async function startPayment() {
+        const res = await fetch('/.netlify/functions/create-payment-intent');
+        const { clientSecret } = await res.json();
+
+        const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY'); // Replace this
+        const elements = stripe.elements({ clientSecret });
+
+        const paymentElement = elements.create('payment', {
+          layout: 'tabs',
+          defaultValues: {
+            paymentMethod: { type: 'us_bank_account' }
+          }
+        });
+        paymentElement.mount('#payment-element');
+
+        document.getElementById('submit').addEventListener('click', async () => {
+          const { error } = await stripe.confirmPayment({
+            elements,
+            confirmParams: { return_url: window.location.href },
+          });
+          if (error) alert(error.message);
+        });
+      }
+      startPayment();
+    </script>
+  </body>
+</html>
