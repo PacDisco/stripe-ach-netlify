@@ -14,7 +14,7 @@
         const res = await fetch('/.netlify/functions/create-payment-intent');
         const { clientSecret } = await res.json();
 
-        const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY'); // Replace this
+        const stripe = Stripe('pk_live_51RMg94AY32Ud1DlwTOrFXVmCBPVvcg8Yfcb8No5Z5reZwPH557KZ0CDLlOhZ1onSpfFvN2okLUxOMueCSf2jlGC100mZv6fxIs'); // Replace this
         const elements = stripe.elements({ clientSecret });
 
         const paymentElement = elements.create('payment', {
